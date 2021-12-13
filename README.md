@@ -33,6 +33,7 @@ source venv/bin/activate
 2. Install required packages
 
 ``` 
+pip install --upgrade pip
 pip install mediapipe opencv-python tensorflow
 ```
 
