@@ -12,7 +12,7 @@ We then use Mediapipe's Hands to detect hands and recognize hands gestures.
   - Take a screenshot of an interesting passage in the book when you want it
   - Detect when you turn a page to do statistics on your reading like speed.
 
- ## What has been done
+## What has been done
 
 - [x] Take a screenshot gesture
 - [ ] Detect page turning
@@ -20,3 +20,25 @@ We then use Mediapipe's Hands to detect hands and recognize hands gestures.
 - [ ] Deploy code on raspberry
 - [ ] Attach camera to lamp
 - [ ] Compile data into a mobile app
+
+## How to run it
+
+1. (Optional) Setup a Python virtual environment
+
+```bash
+python3 -m venv ./venv
+source venv/bin/activate
+```
+
+2. Install required packages
+
+``` 
+pip install mediapipe opencv-python tensorflow
+```
+
+3. Run the app
+
+``` 
+python main.py
+```
+
