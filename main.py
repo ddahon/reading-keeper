@@ -1,44 +1,86 @@
+import copy
+import itertools
 import time
-import cv2
+
+import cv2 as cv
 import mediapipe as mp
+from utils.utils import *
+
+from model import KeyPointClassifier
+
+
+labels = ["Normal", "Capture"]
+
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
+keypoint_classifier = KeyPointClassifier()
 
 # For video stream :
-cap = cv2.VideoCapture(0)
-# 1080p
-cap.set(3, 1920)
-cap.set(4, 1080)
+cap = cv.VideoCapture(0)
 
+# For FPS computation
 prevTime = 0
+
+# To avoid unwanted captures
+time_between_captures = 1
+
+nbImagesCaptured = 0
+previousSign = 0
+lastCapture = 0
+
 with mp_hands.Hands(
+    max_num_hands=1,
     min_detection_confidence=0.5, # Detection Sensitivity
     min_tracking_confidence=0.5) as hands:
     while cap.isOpened():
         success, image = cap.read()
+        image = cv.flip(image, 1)
         if not success:
             print("Ignoring empty camera frame")
             continue
 
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         # To improve performance, mark image as not writeable to pass by reference
         image.flags.writeable = False
         results = hands.process(image)
 
         # Draw the hand annotations on the image
         image.flags.writeable = True
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        if results.multi_hand_landmarks:
-             for hand_landmarks in results.multi_hand_landmarks:
-                mp_drawing.draw_landmarks(
-                    image, hand_landmarks, mp_hands.HAND_CONNECTIONS
+        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
+
+        if results.multi_hand_landmarks is not None:
+            for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
+                                                  results.multi_handedness):
+                brect = calc_bounding_rect(image, hand_landmarks)
+                landmark_list = calc_landmark_list(image, hand_landmarks)
+
+                pre_processed_landmark_list = pre_process_landmark(
+                    landmark_list)
+
+                hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+
+                # Capture image
+                if hand_sign_id == 1 and previousSign != 1 and time.time() - lastCapture >= time_between_captures:
+                    cv.imwrite("images/{}.png".format(nbImagesCaptured), cv.flip(image, 1))
+                    nbImagesCaptured += 1
+                    lastCapture = time.time()
+                    print("Capture")
+
+                image = draw_bounding_rect(True, image, brect)
+                image = draw_landmarks(image, landmark_list)
+                image = draw_info_text(
+                    image,
+                    brect,
+                    handedness,
+                    labels[hand_sign_id],
+                    ""
                 )
+                previousSign = hand_sign_id
         currTime = time.time()
         fps = 1 / (currTime - prevTime)
         prevTime = currTime
-        flippedImage = cv2.flip(image, 1)
-        cv2.putText(flippedImage, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
-        cv2.imshow('MediaPipe Hands', flippedImage)
-        if cv2.waitKey(5) & 0xFF == 27:
+        cv.putText(image, f'FPS: {int(fps)}', (20, 70), cv.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
+        cv.imshow('Rake', image)
+        if cv.waitKey(5) & 0xFF == 27:
             break
 cap.release()

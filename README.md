@@ -11,10 +11,10 @@ We then use Mediapipe's Hands to detect hands and recognize hands gestures.
 ## What should it do
   - Take a screenshot of an interesting passage in the book when you want it
   - Detect when you turn a page to do statistics on your reading like speed.
- 
+
  ## What has been done
 
-- [ ] Take a screenshot gesture
+- [x] Take a screenshot gesture
 - [ ] Detect page turning
 - [ ] Setup Raspberry camera
 - [ ] Deploy code on raspberry
