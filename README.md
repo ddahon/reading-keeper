@@ -10,6 +10,9 @@ We then use Mediapipe's Hands to detect hands and recognize hands gestures.
 
 ## What should it do
   - Take a screenshot of an interesting passage in the book when you want it
+  The current gesture to take a photo is the following :
+  ![2021-12-20-135159](https://user-images.githubusercontent.com/39133219/146770459-585ea224-f36c-474c-a5f1-ac0ba1aa2fb4.jpg)
+
   - Detect when you turn a page to do statistics on your reading like speed.
 
 ## What has been done
