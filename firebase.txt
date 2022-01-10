@@ -1,0 +1,14 @@
+apiKey: "AIzaSyCEvBzkXJuR7YW4g0DxkgecX48jUArCo6k",
+
+  authDomain: "rake-3517c.firebaseapp.com",
+
+  projectId: "rake-3517c",
+
+  storageBucket: "rake-3517c.appspot.com",
+
+  messagingSenderId: "57139377223",
+
+  appId: "1:57139377223:web:a03478c1a36d8d721bad62",
+
+  measurementId: "G-R424YYEVC7"
+

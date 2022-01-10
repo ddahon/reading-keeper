@@ -11,17 +11,17 @@ We then use Mediapipe's Hands to detect hands and recognize hand gestures with a
 ## What should it do
   - Take a screenshot of an interesting passage in the book when you want it
 
-    - The current gesture to take a photo is the following :
-
-       [![2021-12-20-135159](https://user-images.githubusercontent.com/39133219/146770459-585ea224-f36c-474c-a5f1-ac0ba1aa2fb4.jpg)](https://user-images.githubusercontent.com/39133219/146770459-585ea224-f36c-474c-a5f1-ac0ba1aa2fb4.jpg)
-
-    IMPORTANT : It should be done with the LEFT hand. 
-
-    The gesture is not recognized on the right hand in order to  minimize the risks of taking a capture when turning a page with your right hand.
-
+- The current gesture to take a photo is the following :
+    
+![2021-12-20-135159](https://user-images.githubusercontent.com/39133219/146770459-585ea224-f36c-474c-a5f1-ac0ba1aa2fb4.jpg)
+    
+IMPORTANT : It should be done with the LEFT hand. 
+    
+The gesture is not recognized on the right hand in order to  minimize the risks of taking a capture when turning a page with your right hand.
     
 
-  - Detect when you turn a page to do statistics on your reading like speed.
+
+- Detect when you turn a page to do statistics on your reading like speed.
 
 ## What has been done
 
