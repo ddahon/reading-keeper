@@ -4,8 +4,10 @@ import time
 
 import cv2 as cv
 import mediapipe as mp
+import os
 from utils.utils import *
-
+from google.cloud import storage
+from firebase import firebase
 from model import KeyPointClassifier
 
 
@@ -28,6 +30,13 @@ nbImagesCaptured = 0
 previousSign = 0
 lastCapture = 0
 
+# Firebase storage
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="rake-3517c-firebase-adminsdk-uw5u6-98882a59de.json"
+firebase = firebase.FirebaseApplication('https://rake-3517c-default-rtdb.firebaseio.com/')
+client = storage.Client()
+bucket = client.get_bucket('rake-3517c.appspot.com')
+
+# Main loop
 with mp_hands.Hands(
     max_num_hands=1,
     min_detection_confidence=0.5, # Detection Sensitivity
@@ -56,12 +65,20 @@ with mp_hands.Hands(
 
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
-
+		
+		# Classify gesture
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
 
                 # Capture image
                 if hand_sign_id == 1 and previousSign != 1 and time.time() - lastCapture >= time_between_captures:
-                    cv.imwrite("images/{}.png".format(nbImagesCaptured), cv.flip(image, 1))
+		    # Flip image vertically and horizontally before saving
+                    cv.imwrite("images/{}.png".format(nbImagesCaptured), cv.flip(image, 0))
+                    
+		    # Send to firebase
+                    imageBlob = bucket.blob("/")
+                    imagePath = "images/{}.png".format(nbImagesCaptured)
+                    imageBlob = bucket.blob("{}.png".format(nbImagesCaptured))
+                    imageBlob.upload_from_filename(imagePath)
                     nbImagesCaptured += 1
                     lastCapture = time.time()
                     print("Capture")
